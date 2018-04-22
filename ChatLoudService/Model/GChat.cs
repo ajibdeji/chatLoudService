@@ -7,33 +7,30 @@ namespace ChatLoudService.Model
     using System.Data.Entity.Spatial;
     using System.Runtime.Serialization;
 
+    [Table("GChat")]
     [DataContract]
-    public partial class Chat
+    public partial class GChat
     {
         [DataMember]
-        public int id { get; set; }
+        public int ID { get; set; }
 
-        [Required]
         [StringLength(128)]
         [DataMember]
         public string clientID { get; set; }
 
-        [Required]
-        [StringLength(128)]
         [DataMember]
-        public string recipientID { get; set; }
+        public int? channelID { get; set; }
 
-        [Required]
         [DataMember]
         public string message { get; set; }
 
         [DataMember]
-        public DateTime timeSent { get; set; }
+        public DateTime? timeSent { get; set; }
 
         [DataMember]
         public virtual AspNetUser AspNetUser { get; set; }
 
         [DataMember]
-        public virtual AspNetUser AspNetUser1 { get; set; }
+        public virtual Channel Channel { get; set; }
     }
 }

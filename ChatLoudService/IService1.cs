@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatLoudService.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -12,33 +13,23 @@ namespace ChatLoudService
     public interface IService1
     {
         [OperationContract]
-        string GetData(int value);
+        IEnumerable<Channel> GetChannels();
+        [OperationContract]
+        IEnumerable<AspNetUser> GetUsers();
+        [OperationContract]
+        IEnumerable<UserProfile> GetSearchedUsers(String userName);
+        [OperationContract]
+        UserProfile GetUserProfile(String id);
+        [OperationContract]
+        UserProfile GetUserProfileByUserName(String userName);
+        [OperationContract]
+        IEnumerable<OnlineUserModel> GetOnlineUsers();
+        [OperationContract]
+        void ConnectUser(OnlineUser online);
+        [OperationContract]
+        void DisconnectUser(string id);
 
-        [OperationContract] 
-        CompositeType GetDataUsingDataContract(CompositeType composite);
 
-        // TODO: Add your service operations here
-    }
 
-    // Use a data contract as illustrated in the sample below to add composite types to service operations.
-    [DataContract]
-    public class CompositeType
-    {
-        bool boolValue = true;
-        string stringValue = "Hello ";
-
-        [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
-
-        [DataMember]
-        public string StringValue
-        {
-            get { return stringValue; }
-            set { stringValue = value; }
-        }
     }
 }
