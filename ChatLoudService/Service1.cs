@@ -15,16 +15,40 @@ namespace ChatLoudService
 
         public void ConnectUser(OnlineUser online)
         {
-            context.OnlineUsers.Add(online);
-            context.SaveChanges();
+            try
+            {
+                context.OnlineUsers.Add(online);
+                context.SaveChanges();
+            }
+            catch(FaultException ex)
+            {
+                ServiceFault df = new ServiceFault();
+                df.Error = ex.Message;
+                df.Details = "An Error Occured in Establishing a Connection";
+                throw new FaultException<ServiceFault>(df);
+            }
+            
         }
 
         public void DisconnectUser(string id)
         {
-            var onlineUser = context.OnlineUsers.Where(x => x.Id == id).FirstOrDefault();
-            if (onlineUser != null)
-                context.OnlineUsers.Remove(onlineUser);
-                context.SaveChanges();
+            try
+            {
+                var onlineUser = context.OnlineUsers.Where(x => x.Id == id).FirstOrDefault();
+                if (onlineUser != null)
+                {
+                    context.OnlineUsers.Remove(onlineUser);
+                    context.SaveChanges();
+                }
+            }
+
+            catch (FaultException ex)
+            {
+                ServiceFault df = new ServiceFault();
+                df.Error = ex.Message;
+                df.Details = "An Error Occured in Establishing a Connection";
+                throw new FaultException<ServiceFault>(df);
+            }
         }
 
         public IEnumerable<Channel> GetChannels()
@@ -51,7 +75,10 @@ namespace ChatLoudService
                                     }).ToList();
             }catch(FaultException ex)
             {
-                throw new FaultException(ex.Message);
+                ServiceFault df = new ServiceFault();
+                df.Error = ex.Message;
+                df.Details = "An Error Occured in Getting the users"+ex.InnerException.Message;
+                throw new FaultException<ServiceFault>(df);
             }
             return onlineUserModels;
         }
@@ -99,9 +126,31 @@ namespace ChatLoudService
             return userProfile;
         }
 
-        public IEnumerable<AspNetUser> GetUsers()
+        public IEnumerable<UserProfile> GetUsers()
         {
-            return context.AspNetUsers.ToList();
+            var usersList = new List<AspNetUser>();
+            var userProfiles = new List<UserProfile>();
+
+            try
+            {
+                usersList = context.AspNetUsers.ToList();
+                userProfiles = (from user in usersList
+                                select new UserProfile
+                                {
+                                    Id = user.Id,
+                                    UserName = user.UserName
+                                }
+                                        ).ToList();
+            }
+            catch(FaultException ex)
+            {
+                ServiceFault df = new ServiceFault();
+                df.Error = ex.Message;
+                df.Details = "An Error Occured in Getting the users" + ex.InnerException.Message;
+                throw new FaultException<ServiceFault>(df);
+            }
+            
+            return userProfiles;
         }
     }
 }

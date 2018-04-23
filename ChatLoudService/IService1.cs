@@ -15,7 +15,8 @@ namespace ChatLoudService
         [OperationContract]
         IEnumerable<Channel> GetChannels();
         [OperationContract]
-        IEnumerable<AspNetUser> GetUsers();
+        [FaultContract(typeof(ServiceFault))]
+        IEnumerable<UserProfile> GetUsers();
         [OperationContract]
         IEnumerable<UserProfile> GetSearchedUsers(String userName);
         [OperationContract]
@@ -23,10 +24,13 @@ namespace ChatLoudService
         [OperationContract]
         UserProfile GetUserProfileByUserName(String userName);
         [OperationContract]
+        [FaultContract(typeof(ServiceFault))]
         IEnumerable<OnlineUserModel> GetOnlineUsers();
         [OperationContract]
+        [FaultContract(typeof(ServiceFault))]
         void ConnectUser(OnlineUser online);
         [OperationContract]
+        [FaultContract(typeof(ServiceFault))]
         void DisconnectUser(string id);
 
 
